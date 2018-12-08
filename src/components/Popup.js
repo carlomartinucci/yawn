@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 import useDescription from '../hooks/useDescription'
 import useTitle from '../hooks/useTitle'
 import useUrl from '../hooks/useUrl'
+import usePages from '../hooks/usePages'
 
 const Popup = props => {
   const [defaultTitle, title, setTitle] = useTitle()
   const [defaultUrl, url, setUrl] = useUrl()
   const [defaultDescription, description, setDescription] = useDescription()
+
+  const [pages, addPage, removePage] = usePages()
 
   return <div className="container">
     <div className="row">
@@ -27,9 +30,22 @@ const Popup = props => {
             <textarea name="description" className="form-control" id="description" rows={3} placeholder={defaultDescription} value={description} onChange={(event) => setDescription(event.currentTarget.value)}/>
           </div>
 
-          <button type="submit" className="btn btn-primary">Submit</button>
+          <button type="submit" className="btn btn-primary" onClick={event => addPage({ title, url, description })}>
+            Add
+          </button>
         </form>
       </div>
+    </div>
+
+    <div className="row">
+      {pages.map((page, index) => (
+        <div key={index} className="col-12">
+          <h3>{page.title}</h3>
+          <h4>{page.url}</h4>
+          <p>{page.description}</p>
+          <button className="btn btn-danger" onClick={event => removePage(page)}>Remove</button>
+        </div>
+      ))}
     </div>
   </div>
 }
