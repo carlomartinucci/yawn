@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
+import axios from 'axios'
+
 import useDescription from '../hooks/useDescription'
 import useTitle from '../hooks/useTitle'
 import useUrl from '../hooks/useUrl'
@@ -9,7 +11,22 @@ const Popup = props => {
   const [defaultUrl, url, setUrl] = useUrl()
   const [defaultDescription, description, setDescription] = useDescription()
 
-  const [pages, addPage, removePage] = usePages()
+  const [pages, addPage, removePage, emptyPages] = usePages()
+
+  const deliver = () => {
+    const options = { newsletter: { pages_attributes: pages} }
+
+    const handleSuccess = emptyPages
+    const handleError = console.error
+
+    return axios.post(`http://localhost:3000/newsletters`, options)
+      .then(response => {
+        console.log(response)
+        if (response.status === 201) { handleSuccess() }
+        else { handleError(response) }
+      })
+      .catch(console.error)
+  }
 
   return <div className="container">
     <div className="row">
@@ -46,6 +63,12 @@ const Popup = props => {
           <button className="btn btn-danger" onClick={event => removePage(page)}>Remove</button>
         </div>
       ))}
+    </div>
+
+    <div className="row">
+      <div className="col-12">
+        <button className="btn btn-primary" onClick={deliver}>Deliver!</button>
+      </div>
     </div>
   </div>
 }

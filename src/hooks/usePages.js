@@ -37,7 +37,20 @@ const usePages = () => {
     setPages(newPages)
   }
 
-  return [pages, addPage, removePage]
+  const emptyPages = () => {
+    const newPages = []
+
+    if (global.chrome) {
+      global.chrome.storage.local.set({ pages: newPages.map(JSON.stringify) })
+    } else if (global.browser) {
+      global.browser.storage.local.set({ pages: newPages.map(JSON.stringify) })
+    }
+
+    // page.position
+    setPages(newPages)
+  }
+
+  return [pages, addPage, removePage, emptyPages]
 }
 
 export default usePages
